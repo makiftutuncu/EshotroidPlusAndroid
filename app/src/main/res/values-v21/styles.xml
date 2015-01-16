@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Application theme. -->
+    <style name="Eshotroid" parent="Eshotroid.Base">
+        <!--   Navigation bar -->
+        <item name="android:navigationBarColor">@color/primary</item>
+    </style>
+
+</resources>
