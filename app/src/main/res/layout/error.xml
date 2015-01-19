@@ -14,12 +14,15 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 -->
-<resources>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
 
-    <!-- Application theme. -->
-    <style name="Eshotroid" parent="Eshotroid.Base">
-        <!--   Navigation bar -->
-        <item name="android:navigationBarColor">@color/primary</item>
-    </style>
-
-</resources>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/common_error"/>
+</LinearLayout>
