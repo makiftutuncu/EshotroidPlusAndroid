@@ -16,7 +16,6 @@
 package com.mehmetakiftutuncu.eshotroid.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,8 +39,33 @@ import ru.vang.progressswitcher.ProgressWidget;
 public class BusListFragment extends Fragment implements WithContentStates, SwipeRefreshLayout.OnRefreshListener {
     private ProgressWidget progressWidget;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private RecyclerView recyclerView;
     private ActionButton searchActionButton;
+    private RecyclerView recyclerView;
+    private LinearLayoutManager layoutManager;
+    private RecyclerView.OnScrollListener onScrollListener = new RecyclerView.OnScrollListener() {
+        int lastFirstVisibleItem = 0;
+
+        @Override
+        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            final int currentFirstVisibleItem = layoutManager != null ? layoutManager.findFirstVisibleItemPosition() : 0;
+
+            if (currentFirstVisibleItem > this.lastFirstVisibleItem) {
+                showHideSearchActionButton(false);
+            } else if (currentFirstVisibleItem < this.lastFirstVisibleItem) {
+                showHideSearchActionButton(true);
+            }
+
+            this.lastFirstVisibleItem = currentFirstVisibleItem;
+        }
+    };
+
+    private LoadBusListTask.OnBusListLoadedListener onBusListLoadedListener = new LoadBusListTask.OnBusListLoadedListener() {
+        @Override
+        public void onBusListLoaded(List<BusListItem> busList) {
+            setBusList(busList);
+        }
+    };
 
     private ContentStates state;
 
@@ -54,42 +78,23 @@ public class BusListFragment extends Fragment implements WithContentStates, Swip
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
         View layout = inflater.inflate(R.layout.fragment_bus_list, container, false);
 
         progressWidget = (ProgressWidget) layout.findViewById(R.id.progressWidget_busList);
-        progressWidget.showProgress(true);
 
         swipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout_busList);
         swipeRefreshLayout.setOnRefreshListener(this);
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.primary), getResources().getColor(R.color.primaryDark));
 
+        layoutManager = new LinearLayoutManager(getActivity());
+
         recyclerView = (RecyclerView) layout.findViewById(R.id.recyclerView_busList);
         recyclerView.setHasFixedSize(true);
-
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setOnScrollListener(onScrollListener);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            int lastFirstVisibleItem = 0;
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                final int currentFirstVisibleItem = layoutManager.findFirstVisibleItemPosition();
-
-                if (currentFirstVisibleItem > this.lastFirstVisibleItem) {
-                    searchActionButton.hide();
-                } else if (currentFirstVisibleItem < this.lastFirstVisibleItem) {
-                    searchActionButton.show();
-                }
-
-                this.lastFirstVisibleItem = currentFirstVisibleItem;
-            }
-        });
-
-        searchActionButton.hide();
 
         return layout;
     }
@@ -98,36 +103,23 @@ public class BusListFragment extends Fragment implements WithContentStates, Swip
     public void onStart() {
         super.onStart();
 
-        new LoadBusListTask(getActivity(), new LoadBusListTask.OnBusListLoadedListener() {
-            @Override
-            public void onBusListLoaded(List<BusListItem> busList) {
-                setBusList(busList);
-            }
-        }).execute();
+        loadBusList(false);
     }
 
     public void setBusList(List<BusListItem> busList) {
         if (busList == null || busList.isEmpty()) {
-            progressWidget.showError(true);
+            changeStateTo(ContentStates.ERROR);
         } else {
             adapter = new BusListItemAdapter(busList);
-
             recyclerView.setAdapter(adapter);
-            progressWidget.showContent(true);
-            searchActionButton.show();
+
+            changeStateTo(ContentStates.CONTENT);
         }
-        swipeRefreshLayout.setRefreshing(false);
-        progressWidget.setEnabled(true);
     }
 
     @Override
     public void onRefresh() {
-        new LoadBusListTask(getActivity(), new LoadBusListTask.OnBusListLoadedListener() {
-            @Override
-            public void onBusListLoaded(List<BusListItem> busList) {
-                setBusList(busList);
-            }
-        }, true).execute();
+        loadBusList(true);
     }
 
     public void setSearchActionButton(ActionButton searchActionButton) {
@@ -136,12 +128,68 @@ public class BusListFragment extends Fragment implements WithContentStates, Swip
 
     @Override
     public void changeStateTo(ContentStates newState) {
-        switch (newState) {
-            case LOADING:
-            case ERROR:
-            case CONTENT:
-            default:
-                break;
+        if (state == null || !state.equals(newState)) {
+            state = newState;
+
+            switch (newState) {
+                case LOADING:
+                    progressWidget.showProgress(true);
+                    showHideSearchActionButton(false);
+                    setRefreshing(false);
+                    break;
+                case REFRESHING:
+                    showHideSearchActionButton(false);
+                    setRefreshing(true);
+                    break;
+                case ERROR:
+                    progressWidget.showError(true);
+                    showHideSearchActionButton(false);
+                    setRefreshing(false);
+                    break;
+                case CONTENT:
+                    progressWidget.showContent(true);
+                    showHideSearchActionButton(true);
+                    setRefreshing(false);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    public void search(String query) {
+        if (adapter != null) {
+            adapter.search(query);
+        }
+    }
+
+    public boolean isRefreshing() {
+        return state != null && state.equals(ContentStates.REFRESHING);
+    }
+
+    private void loadBusList(boolean forceDownload) {
+        if (forceDownload) {
+            new LoadBusListTask(getActivity(), onBusListLoadedListener, true).execute();
+            changeStateTo(ContentStates.REFRESHING);
+        } else {
+            new LoadBusListTask(getActivity(), onBusListLoadedListener).execute();
+            changeStateTo(ContentStates.LOADING);
+        }
+    }
+
+    private void showHideSearchActionButton(boolean show) {
+        if (searchActionButton != null) {
+            if (show) {
+                searchActionButton.show();
+            } else {
+                searchActionButton.hide();
+            }
+        }
+    }
+
+    private void setRefreshing(boolean isRefreshing) {
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(isRefreshing);
         }
     }
 }

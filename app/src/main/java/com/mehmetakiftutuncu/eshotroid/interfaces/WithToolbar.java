@@ -6,4 +6,6 @@ public interface WithToolbar {
     public void initializeToolbar();
 
     public Toolbar getToolbar();
+
+    public void showSearchToolbar(boolean show);
 }

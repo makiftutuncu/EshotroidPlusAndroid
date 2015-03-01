@@ -11,8 +11,11 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.mehmetakiftutuncu.eshotroid.R;
 import com.mehmetakiftutuncu.eshotroid.models.BusListItem;
+import com.mehmetakiftutuncu.eshotroid.utilities.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class BusListItemAdapter extends RecyclerView.Adapter<BusListItemAdapter.ViewHolder>{
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -42,6 +45,11 @@ public class BusListItemAdapter extends RecyclerView.Adapter<BusListItemAdapter.
     }
 
     private List<BusListItem> busList;
+    private List<BusListItem> busListToShow;
+
+    private boolean isSearching;
+
+    private Locale locale = new Locale("tr");
 
     public BusListItemAdapter(List<BusListItem> busList) {
         setBusList(busList);
@@ -56,20 +64,50 @@ public class BusListItemAdapter extends RecyclerView.Adapter<BusListItemAdapter.
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.setItem(busList != null ? busList.get(position) : null);
+        BusListItem item = isSearching
+                ? (busListToShow != null ? busListToShow.get(position) : null)
+                : (busList != null ? busList.get(position) : null);
+
+        holder.setItem(item);
     }
 
     @Override
     public int getItemCount() {
-        return busList != null ? busList.size() : 0;
+        List<BusListItem> list = getBusList();
+        return list != null ? list.size() : 0;
     }
 
     public List<BusListItem> getBusList() {
-        return busList;
+        return isSearching ? busListToShow : busList;
     }
 
     public void setBusList(List<BusListItem> busList) {
         this.busList = busList;
+        this.busListToShow = new ArrayList<>();
+
+        search("");
+    }
+
+    public void search(String query) {
+        if (busListToShow != null) {
+            busListToShow.clear();
+        }
+
+        isSearching = !StringUtils.isEmpty(query);
+
+        if (isSearching) {
+            for (BusListItem busListItem : busList) {
+                String finalQuery    = query.toLowerCase(locale);
+                boolean idMatches    = busListItem.id.contains(finalQuery);
+                boolean startMatches = busListItem.start.toLowerCase(locale).contains(finalQuery);
+                boolean endMatches   = busListItem.end.toLowerCase(locale).contains(finalQuery);
+
+                if (idMatches || startMatches || endMatches) {
+                    busListToShow.add(busListItem);
+                }
+            }
+        }
+
         notifyDataSetChanged();
     }
 }

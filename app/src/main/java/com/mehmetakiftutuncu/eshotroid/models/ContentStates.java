@@ -23,6 +23,8 @@ package com.mehmetakiftutuncu.eshotroid.models;
 public enum ContentStates {
     /** Content is currently being loaded/downloaded */
     LOADING,
+    /** Content is currently being refreshed */
+    REFRESHING,
     /** Content is successfully loaded/downloaded */
     CONTENT,
     /** Content is loaded/downloaded but it is empty */

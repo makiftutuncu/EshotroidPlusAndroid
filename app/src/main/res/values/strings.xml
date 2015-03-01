@@ -23,4 +23,7 @@
     <string name="common_noContent">There is nothing to see here.</string>
     <string name="common_error">An error occurred.</string>
 
+    <!-- Bus list related -->
+    <string name="busList_search_hint">Search for buses</string>
+
 </resources>

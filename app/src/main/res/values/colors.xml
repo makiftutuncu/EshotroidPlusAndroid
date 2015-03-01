@@ -19,5 +19,6 @@
     <color name="primaryDark">#B71C1C</color>
     <color name="accent">#F44336</color>
     <color name="white">#FFFFFF</color>
+    <color name="semiTransparentWhite">#88FFFFFF</color>
     <color name="transparent">#00000000</color>
 </resources>
