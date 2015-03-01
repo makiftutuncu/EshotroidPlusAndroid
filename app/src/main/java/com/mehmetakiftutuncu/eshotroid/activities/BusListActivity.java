@@ -15,6 +15,7 @@
  */
 package com.mehmetakiftutuncu.eshotroid.activities;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -22,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -36,8 +38,6 @@ import com.software.shell.fab.ActionButton;
 public class BusListActivity extends ActionBarActivity implements WithToolbar, View.OnClickListener {
     private Toolbar toolbar;
     private RelativeLayout toolbarSearchLayout;
-    private ImageButton toolbarBackButton;
-    private ImageButton toolbarClearButton;
     private EditText toolbarSearchEditText;
     private ActionButton searchActionButton;
 
@@ -92,12 +92,12 @@ public class BusListActivity extends ActionBarActivity implements WithToolbar, V
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        toolbarSearchLayout   = (RelativeLayout) findViewById(R.id.relativeLayout_toolbar_searchLayout);
-        toolbarBackButton     = (ImageButton) findViewById(R.id.imageButton_toolbar_searchBack);
-        toolbarClearButton    = (ImageButton) findViewById(R.id.imageButton_toolbar_searchClear);
+        toolbarSearchLayout = (RelativeLayout) findViewById(R.id.relativeLayout_toolbar_searchLayout);
+
         toolbarSearchEditText = (EditText) findViewById(R.id.editText_toolbar_search);
         toolbarSearchEditText.addTextChangedListener(searchTextWatcher);
 
+        ImageButton toolbarBackButton = (ImageButton) findViewById(R.id.imageButton_toolbar_searchBack);
         toolbarBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,6 +105,7 @@ public class BusListActivity extends ActionBarActivity implements WithToolbar, V
             }
         });
 
+        ImageButton toolbarClearButton = (ImageButton) findViewById(R.id.imageButton_toolbar_searchClear);
         toolbarClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -123,14 +124,14 @@ public class BusListActivity extends ActionBarActivity implements WithToolbar, V
         if (toolbarSearchLayout != null) {
             if (show) {
                 toolbarSearchLayout.setVisibility(View.VISIBLE);
-                toolbarSearchEditText.requestFocus();
+                showHideKeyboard(true);
 
                 if (searchActionButton != null) {
                     searchActionButton.hide();
                 }
             } else {
                 toolbarSearchLayout.setVisibility(View.GONE);
-                toolbarSearchEditText.clearFocus();
+                showHideKeyboard(false);
 
                 if (searchActionButton != null) {
                     searchActionButton.show();
@@ -149,7 +150,7 @@ public class BusListActivity extends ActionBarActivity implements WithToolbar, V
 
     @Override
     public void onBackPressed() {
-        if (isShowingSearchToolbar()) {
+        if (isOnSearchMode()) {
             showSearchToolbar(false);
         } else {
             super.onBackPressed();
@@ -160,7 +161,21 @@ public class BusListActivity extends ActionBarActivity implements WithToolbar, V
         return layoutType != null && layoutType.equals(ContentLayoutTypes.MASTER_DETAIL);
     }
 
-    public boolean isShowingSearchToolbar() {
+    public boolean isOnSearchMode() {
         return toolbarSearchLayout != null && toolbarSearchLayout.getVisibility() == View.VISIBLE;
+    }
+
+    private void showHideKeyboard(boolean show) {
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        if (inputManager != null && toolbarSearchEditText != null) {
+            if (show) {
+                toolbarSearchEditText.requestFocus();
+                inputManager.showSoftInput(toolbarSearchEditText, InputMethodManager.SHOW_IMPLICIT);
+            } else {
+                toolbarSearchEditText.clearFocus();
+                inputManager.hideSoftInputFromWindow(toolbarSearchEditText.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        }
     }
 }

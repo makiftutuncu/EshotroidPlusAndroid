@@ -151,7 +151,10 @@ public class BusListFragment extends Fragment implements WithContentStates, Swip
                     showHideSearchActionButton(true);
                     setRefreshing(false);
                     break;
-                default:
+                case NO_CONTENT:
+                    progressWidget.showEmpty(true);
+                    showHideSearchActionButton(false);
+                    setRefreshing(false);
                     break;
             }
         }
@@ -160,6 +163,8 @@ public class BusListFragment extends Fragment implements WithContentStates, Swip
     public void search(String query) {
         if (adapter != null) {
             adapter.search(query);
+
+            changeStateTo(adapter.getItemCount() <= 0 ? ContentStates.NO_CONTENT : ContentStates.CONTENT);
         }
     }
 

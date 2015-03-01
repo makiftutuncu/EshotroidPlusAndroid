@@ -44,6 +44,7 @@
             android:layout_marginLeft="@dimen/spacing_small"
             android:layout_marginRight="@dimen/spacing_medium"
             android:textCursorDrawable="@null"
+            android:inputType="textCapWords"
             android:hint="@string/busList_search_hint"
             android:textColor="@color/white"
             android:textColorHint="@color/semiTransparentWhite"/>

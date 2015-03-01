@@ -21,7 +21,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     progress:errorViewLayout="@layout/error"
-    progress:progressViewLayout="@layout/loading">
+    progress:progressViewLayout="@layout/loading"
+    progress:emptyViewLayout="@layout/no_content">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout_busList"
