@@ -18,7 +18,6 @@ package com.mehmetakiftutuncu.eshotroid.activities;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -140,15 +139,28 @@ public class BusListActivity extends ActionBarActivity implements WithToolbar, V
         }
     }
 
-    public boolean isTabletMode() {
-        return layoutType != null && layoutType.equals(ContentLayoutTypes.MASTER_DETAIL);
-    }
-
     @Override
     public void onClick(View v) {
         if (v != null && v.getId() == (searchActionButton != null ? searchActionButton.getId() : -1)) {
             // Search action button is clicked
             showSearchToolbar(true);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isShowingSearchToolbar()) {
+            showSearchToolbar(false);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    public boolean isTabletMode() {
+        return layoutType != null && layoutType.equals(ContentLayoutTypes.MASTER_DETAIL);
+    }
+
+    public boolean isShowingSearchToolbar() {
+        return toolbarSearchLayout != null && toolbarSearchLayout.getVisibility() == View.VISIBLE;
     }
 }
