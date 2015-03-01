@@ -16,6 +16,7 @@
 -->
 <resources>
     <!-- Margin and padding values -->
+    <dimen name="spacing_tiny">2dp</dimen>
     <dimen name="spacing_extraSmall">4dp</dimen>
     <dimen name="spacing_small">8dp</dimen>
     <dimen name="spacing_medium">16dp</dimen>
@@ -33,4 +34,10 @@
 
     <dimen name="progressWheel_radius">72dp</dimen>
     <dimen name="progressWheel_thickness">6dp</dimen>
+
+    <dimen name="busList_id_size">48dp</dimen>
+    <dimen name="busList_cardView_elevation">2dp</dimen>
+    <dimen name="busList_cardView_cornerRadius">4dp</dimen>
+
+    <dimen name="actionButton_imageSize">24dp</dimen>
 </resources>

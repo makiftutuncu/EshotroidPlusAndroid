@@ -34,50 +34,31 @@ import java.util.List;
 public class LoadBusListTask extends AsyncTask<Void, Void, List<BusListItem>> {
     private Context context;
     private OnBusListLoadedListener listener;
+    private boolean forceDownload;
 
     public LoadBusListTask(Context context, OnBusListLoadedListener listener) {
+        this(context, listener, false);
+    }
+
+    public LoadBusListTask(Context context, OnBusListLoadedListener listener, boolean forceDownload) {
         this.context = context;
         this.listener = listener;
+        this.forceDownload = forceDownload;
     }
 
     @Override
     protected List<BusListItem> doInBackground(Void... params) {
-        if (!NetworkUtils.isConnectedToInternet(context)) {
-            Log.error(this, "Failed to load bus list, not connected to internet!");
-            return null;
-        } else {
+        if (!forceDownload) {
             // Load data from disk
             List<BusListItem> busListFromData = Data.loadBusList();
 
             if (busListFromData != null && !busListFromData.isEmpty()) {
                 // Data found on disk
                 return busListFromData;
-            } else {
-                // Data not found on disk
-
-                // Download data from server
-                try {
-                    String busListJSONString = Request.get(URL.busList());
-
-                    JSONObject busListJSON = new JSONObject(busListJSONString);
-                    JSONArray busListJSONArray = busListJSON.getJSONArray("buses");
-
-                    List<BusListItem> busList = new ArrayList<>();
-
-                    for (int i = 0; i < busListJSONArray.length(); i++) {
-                        BusListItem item = BusListItem.fromJson(busListJSONArray.getJSONObject(i).toString());
-                        busList.add(item);
-                    }
-
-                    Data.saveBusList(busList);
-
-                    return busList;
-                } catch (Exception e) {
-                    Log.error(this, "Failed to load bus list!", e);
-                    return null;
-                }
             }
         }
+
+        return download();
     }
 
     @Override
@@ -88,6 +69,37 @@ public class LoadBusListTask extends AsyncTask<Void, Void, List<BusListItem>> {
             Log.error(this, "Failed to load bus list, listener is null!");
         } else {
             listener.onBusListLoaded(busList);
+        }
+    }
+
+    private List<BusListItem> download() {
+        if (!NetworkUtils.isConnectedToInternet(context)) {
+            Log.error(this, "Failed to load bus list, not connected to internet!");
+            return null;
+        } else {
+            // Data not found on disk
+
+            // Download data from server
+            try {
+                String busListJSONString = Request.get(URL.busList());
+
+                JSONObject busListJSON = new JSONObject(busListJSONString);
+                JSONArray busListJSONArray = busListJSON.getJSONArray("buses");
+
+                List<BusListItem> busList = new ArrayList<>();
+
+                for (int i = 0; i < busListJSONArray.length(); i++) {
+                    BusListItem item = BusListItem.fromJson(busListJSONArray.getJSONObject(i).toString());
+                    busList.add(item);
+                }
+
+                Data.saveBusList(busList);
+
+                return busList;
+            } catch (Exception e) {
+                Log.error(this, "Failed to load bus list!", e);
+                return null;
+            }
         }
     }
 

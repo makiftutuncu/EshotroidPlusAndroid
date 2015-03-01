@@ -14,7 +14,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
@@ -24,6 +24,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
         android:orientation="horizontal"
         android:weightSum="10">
 
@@ -41,4 +42,20 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <com.software.shell.fab.ActionButton
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/actionButton_busList_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/fab_margin"
+        android:layout_marginBottom="@dimen/fab_margin"
+        fab:button_color="@color/primary"
+        fab:button_colorPressed="@color/primaryDark"
+        fab:image="@drawable/ic_search"
+        fab:image_size="@dimen/actionButton_imageSize"
+        fab:show_animation="@anim/fab_jump_from_down"
+        fab:hide_animation="@anim/fab_jump_to_down"/>
+
+</RelativeLayout>

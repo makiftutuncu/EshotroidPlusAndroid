@@ -25,14 +25,12 @@ import android.widget.FrameLayout;
 import com.mehmetakiftutuncu.eshotroid.R;
 import com.mehmetakiftutuncu.eshotroid.fragments.BusListFragment;
 import com.mehmetakiftutuncu.eshotroid.interfaces.WithToolbar;
-import com.mehmetakiftutuncu.eshotroid.models.BusListItem;
 import com.mehmetakiftutuncu.eshotroid.models.ContentLayoutTypes;
-import com.mehmetakiftutuncu.eshotroid.tasks.LoadBusListTask;
-
-import java.util.List;
+import com.software.shell.fab.ActionButton;
 
 public class BusListActivity extends ActionBarActivity implements WithToolbar {
     private Toolbar toolbar;
+    private ActionButton searchActionButton;
 
     private ContentLayoutTypes layoutType;
 
@@ -42,6 +40,7 @@ public class BusListActivity extends ActionBarActivity implements WithToolbar {
         setContentView(R.layout.activity_bus_list);
 
         initializeToolbar();
+        searchActionButton = (ActionButton) findViewById(R.id.actionButton_busList_search);
 
         FrameLayout busListContainer = (FrameLayout) findViewById(R.id.frameLayout_busListContainer);
         FrameLayout busDetailsContainer = (FrameLayout) findViewById(R.id.frameLayout_busDetailsContainer);
@@ -52,15 +51,8 @@ public class BusListActivity extends ActionBarActivity implements WithToolbar {
         }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        final BusListFragment busListFragment = new BusListFragment();
+        final BusListFragment busListFragment = BusListFragment.with(searchActionButton);
         fragmentManager.beginTransaction().replace(R.id.frameLayout_busListContainer, busListFragment).commit();
-
-        new LoadBusListTask(this, new LoadBusListTask.OnBusListLoadedListener() {
-            @Override
-            public void onBusListLoaded(List<BusListItem> busList) {
-                busListFragment.setBusList(busList);
-            }
-        }).execute();
     }
 
     @Override
