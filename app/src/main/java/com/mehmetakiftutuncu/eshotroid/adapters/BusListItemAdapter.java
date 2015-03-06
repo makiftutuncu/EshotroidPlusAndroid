@@ -93,11 +93,13 @@ public class BusListItemAdapter extends RecyclerView.Adapter<BusListItemAdapter.
             busListToShow.clear();
         }
 
+        String trimmedQuery = query != null ? query.trim() : "";
+
         isSearching = !StringUtils.isEmpty(query);
 
         if (isSearching) {
             for (BusListItem busListItem : busList) {
-                String finalQuery    = query.toLowerCase(locale);
+                String finalQuery    = trimmedQuery.toLowerCase(locale);
                 boolean idMatches    = busListItem.id.contains(finalQuery);
                 boolean startMatches = busListItem.start.toLowerCase(locale).contains(finalQuery);
                 boolean endMatches   = busListItem.end.toLowerCase(locale).contains(finalQuery);

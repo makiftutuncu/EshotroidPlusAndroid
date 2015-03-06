@@ -14,51 +14,57 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 -->
-<android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/toolbar"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/relativeLayout_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/primary">
+    android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout_toolbar_searchLayout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:background="@color/primary">
 
-        <ImageButton
-            android:id="@+id/imageButton_toolbar_searchBack"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/relativeLayout_toolbar_searchLayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_back"/>
+            android:visibility="gone">
 
-        <EditText
-            android:id="@+id/editText_toolbar_search"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_toRightOf="@id/imageButton_toolbar_searchBack"
-            android:layout_marginLeft="@dimen/spacing_small"
-            android:layout_marginRight="@dimen/spacing_medium"
-            android:textCursorDrawable="@null"
-            android:inputType="textCapWords"
-            android:hint="@string/busList_search_hint"
-            android:textColor="@color/white"
-            android:textColorHint="@color/semiTransparentWhite"/>
+            <ImageButton
+                android:id="@+id/imageButton_toolbar_searchBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_back"/>
 
-        <ImageButton
-            android:id="@+id/imageButton_toolbar_searchClear"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/spacing_medium"
-            android:background="@color/transparent"
-            android:src="@drawable/ic_clear"/>
+            <EditText
+                android:id="@+id/editText_toolbar_search"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_toRightOf="@id/imageButton_toolbar_searchBack"
+                android:layout_marginLeft="@dimen/spacing_small"
+                android:layout_marginRight="@dimen/spacing_medium"
+                android:textCursorDrawable="@null"
+                android:inputType="textCapWords"
+                android:hint="@string/busList_search_hint"
+                android:textColor="@color/white"
+                android:textColorHint="@color/semiTransparentWhite"/>
 
-    </RelativeLayout>
+            <ImageButton
+                android:id="@+id/imageButton_toolbar_searchClear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/spacing_medium"
+                android:background="@color/transparent"
+                android:src="@drawable/ic_clear"/>
+        </RelativeLayout>
 
-</android.support.v7.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>
+</RelativeLayout>
