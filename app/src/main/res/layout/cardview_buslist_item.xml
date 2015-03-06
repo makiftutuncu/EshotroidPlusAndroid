@@ -36,22 +36,21 @@
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginBottom="@dimen/spacing_small"/>
 
-        <ImageButton
-            android:id="@+id/imageButton_busListItem_more"
+        <CheckBox
+            android:id="@+id/checkBox_busListItem_star"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_marginTop="@dimen/spacing_small"
             android:layout_marginRight="@dimen/spacing_extraSmall"
-            android:src="@drawable/ic_more"
-            android:background="@color/transparent"/>
+            android:button="@drawable/star"/>
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/imageButton_busListItem_more"
+            android:layout_toLeftOf="@id/checkBox_busListItem_star"
             android:layout_toRightOf="@id/imageView_busListItem_id"
             android:orientation="vertical">
 

@@ -9,6 +9,7 @@ public class BusListItem implements Serializable {
     public String id;
     public String start;
     public String end;
+    public boolean starred;
 
     public static BusListItem fromJson(String json) {
         try {
@@ -25,7 +26,7 @@ public class BusListItem implements Serializable {
             Gson gson = new Gson();
             return gson.toJson(this, BusListItem.class);
         } catch (Exception e) {
-            Log.error(this, "Failed to convert BusListItem to json! id: " + id + ", start: " + start + ", end: " + end, e);
+            Log.error(this, "Failed to convert BusListItem to json! id: " + id + ", start: " + start + ", end: " + end + ", starred: " + starred, e);
             return null;
         }
     }
