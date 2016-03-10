@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "com.mehmetakiftutuncu.eshotroid"
         minSdkVersion 15
-        targetSdkVersion 21
-        versionCode 7
-        versionName "3.0"
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
     }
     buildTypes {
         release {
@@ -19,20 +19,8 @@ android {
     }
 }
 
-repositories {
-    maven {
-        url 'http://dl.bintray.com/amulyakhare/maven'
-    }
-}
-
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.3'
-    compile 'com.android.support:cardview-v7:21.0.0'
-    compile 'com.android.support:recyclerview-v7:21.0.0'
-    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.0'
-    compile 'com.github.drnkn:progress-switcher:1.1.3@aar'
-    compile 'com.github.shell-software:fab:1.0.5'
-    compile 'com.google.code.gson:gson:2.3'
-    compile 'com.pnikosis:materialish-progress:1.1'
+    compile 'com.android.support:appcompat-v7:23.2.0'
+    compile 'com.android.support:design:23.2.0'
 }
