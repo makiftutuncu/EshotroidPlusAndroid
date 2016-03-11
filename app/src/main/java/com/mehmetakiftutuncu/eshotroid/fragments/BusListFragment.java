@@ -12,10 +12,12 @@ import android.view.ViewGroup;
 
 import com.mehmetakiftutuncu.eshotroid.R;
 import com.mehmetakiftutuncu.eshotroid.adapters.BusListAdapter;
+import com.mehmetakiftutuncu.eshotroid.database.Database;
 import com.mehmetakiftutuncu.eshotroid.models.Bus;
-import com.mehmetakiftutuncu.eshotroid.data.BusListDownloader;
+import com.mehmetakiftutuncu.eshotroid.downloaders.BusListDownloader;
 import com.mehmetakiftutuncu.eshotroid.utilities.Log;
 import com.mehmetakiftutuncu.eshotroid.utilities.Web;
+import com.mehmetakiftutuncu.eshotroid.utilities.option.Option;
 
 import java.util.ArrayList;
 
@@ -30,6 +32,39 @@ public class BusListFragment extends Fragment implements BusListDownloader.BusLi
 
     public static BusListFragment instance() {
         return new BusListFragment();
+    }
+
+    private void loadBusList() {
+        Log.debug(TAG, "Loading bus list...");
+
+        Option<ArrayList<Bus>> maybeBusListFromDatabase = Database.with(getContext()).loadBusList();
+
+        if (maybeBusListFromDatabase.isDefined) {
+            ArrayList<Bus> busListFromDatabase = maybeBusListFromDatabase.get();
+
+            if (!busListFromDatabase.isEmpty()) {
+                Log.debug(TAG, "Loaded bus list from database!");
+
+                setBusList(busListFromDatabase);
+
+                return;
+            }
+        }
+
+        BusListDownloader.download(this);
+    }
+
+    private void setBusList(ArrayList<Bus> busList) {
+        busListAdapter = new BusListAdapter(busList);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mRecyclerView.setLayoutManager(linearLayoutManager);
+                mRecyclerView.setAdapter(busListAdapter);
+            }
+        });
     }
 
     @Override public void onStart() {
@@ -53,8 +88,6 @@ public class BusListFragment extends Fragment implements BusListDownloader.BusLi
     @Override public void onResume() {
         Log.debug(TAG, "onResume");
 
-        BusListDownloader.download(this);
-
         super.onResume();
     }
 
@@ -70,6 +103,8 @@ public class BusListFragment extends Fragment implements BusListDownloader.BusLi
         View layout = inflater.inflate(R.layout.fragment_bus_list, container, false);
 
         mRecyclerView = (RecyclerView) layout.findViewById(R.id.recyclerView_busList);
+
+        loadBusList();
 
         return layout;
     }
@@ -93,16 +128,9 @@ public class BusListFragment extends Fragment implements BusListDownloader.BusLi
     }
 
     @Override public void onBusListDownloaded(ArrayList<Bus> busList) {
-        busListAdapter = new BusListAdapter(busList);
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        Log.debug(TAG, "Bus list is downloaded!");
 
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                mRecyclerView.setLayoutManager(linearLayoutManager);
-                mRecyclerView.setAdapter(busListAdapter);
-            }
-        });
+        setBusList(busList);
     }
 
     @Override public void onBusListDownloadFailed(Web.FailureType failureType) {

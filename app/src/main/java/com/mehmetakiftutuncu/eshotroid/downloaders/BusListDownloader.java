@@ -1,4 +1,4 @@
-package com.mehmetakiftutuncu.eshotroid.data;
+package com.mehmetakiftutuncu.eshotroid.downloaders;
 
 import com.mehmetakiftutuncu.eshotroid.models.Bus;
 import com.mehmetakiftutuncu.eshotroid.utilities.Conf;
@@ -19,6 +19,8 @@ public class BusListDownloader {
     private static final String TAG = "BusListDownloader";
 
     public static void download(final BusListDownloadListener busListDownloadListener) {
+        Log.debug(TAG, "Downloading bus list...");
+
         Web.instance().get(Conf.Url.BUS_LIST, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

@@ -5,6 +5,10 @@ public class Log {
         android.util.Log.d("[Eshotroid+] [" + tag + "]", message);
     }
 
+    public static void warn(String tag, String message) {
+        android.util.Log.w("[Eshotroid+] [" + tag + "]", message);
+    }
+
     public static void error(String tag, String message) {
         android.util.Log.e("[Eshotroid+] [" + tag + "]", message);
     }
