@@ -2,14 +2,14 @@ package com.mehmetakiftutuncu.eshotroid.utilities;
 
 public class Log {
     public static void debug(String tag, String message) {
-        android.util.Log.d("[" + tag + "]", message);
+        android.util.Log.d("[Eshotroid+] [" + tag + "]", message);
     }
 
     public static void error(String tag, String message) {
-        android.util.Log.e("[" + tag + "]", message);
+        android.util.Log.e("[Eshotroid+] [" + tag + "]", message);
     }
 
     public static void error(String tag, String message, Throwable error) {
-        android.util.Log.e("[" + tag + "]", message, error);
+        android.util.Log.e("[Eshotroid+] [" + tag + "]", message, error);
     }
 }
