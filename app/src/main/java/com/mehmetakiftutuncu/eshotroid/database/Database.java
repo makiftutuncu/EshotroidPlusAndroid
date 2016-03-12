@@ -41,7 +41,7 @@ public class Database extends SQLiteOpenHelper {
         return new Database(context);
     }
 
-    public Option<ArrayList<Bus>> loadBusList() {
+    public Option<ArrayList<Bus>> getBusList() {
         try {
             ArrayList<Bus> busList = new ArrayList<>();
 
@@ -58,16 +58,71 @@ public class Database extends SQLiteOpenHelper {
                     Bus bus = new Bus(id, departure, arrival);
 
                     busList.add(bus);
+
+                    cursor.moveToNext();
                 }
 
                 cursor.close();
             }
+
+            database.close();
 
             return new Some<>(busList);
         } catch (Throwable t) {
             Log.error(TAG, "Failed to get bus list from database!", t);
 
             return new None<>();
+        }
+    }
+
+    public boolean saveBusList(ArrayList<Bus> busList) {
+        try {
+            String[] parameters = new String[busList.size() * 2];
+            StringBuilder insertSQLBuilder = new StringBuilder("INSERT INTO ")
+                .append(TableBus.TABLE_NAME)
+                .append(" (")
+                .append(TableBus.COLUMN_ID)
+                .append(", ")
+                .append(TableBus.COLUMN_DEPARTURE)
+                .append(", ")
+                .append(TableBus.COLUMN_ARRIVAL)
+                .append(") VALUES ");
+
+            for (int i = 0, size = busList.size(); i < size; i++) {
+                Bus bus = busList.get(i);
+
+                insertSQLBuilder.append("(").append(bus.id).append(", ?, ?)");
+
+                parameters[i * 2]       = bus.departure;
+                parameters[(i * 2) + 1] = bus.arrival;
+
+                if (i < size - 1) {
+                    insertSQLBuilder.append(", ");
+                }
+            }
+
+            SQLiteDatabase database = getWritableDatabase();
+
+            boolean result = true;
+
+            try {
+                database.beginTransaction();
+                database.execSQL("DELETE FROM " + TableBus.TABLE_NAME);
+                database.execSQL(insertSQLBuilder.toString(), parameters);
+                database.setTransactionSuccessful();
+            } catch (Throwable t) {
+                Log.error(TAG, "Failed to save bus list to database, transaction failed!", t);
+
+                result = false;
+            } finally {
+                database.endTransaction();
+            }
+
+            return result;
+        } catch (Throwable t) {
+            Log.error(TAG, "Failed to save bus list to database!", t);
+
+            return false;
         }
     }
 

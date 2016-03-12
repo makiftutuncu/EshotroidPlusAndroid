@@ -7,10 +7,11 @@ import android.view.ViewGroup;
 
 import com.mehmetakiftutuncu.eshotroid.R;
 import com.mehmetakiftutuncu.eshotroid.models.Bus;
+import com.turingtechnologies.materialscrollbar.ICustomAdapter;
 
 import java.util.ArrayList;
 
-public class BusListAdapter extends RecyclerView.Adapter<BusListViewHolder> {
+public class BusListAdapter extends RecyclerView.Adapter<BusListViewHolder> implements ICustomAdapter {
     private ArrayList<Bus> busList;
 
     public BusListAdapter(ArrayList<Bus> busList) {
@@ -31,5 +32,9 @@ public class BusListAdapter extends RecyclerView.Adapter<BusListViewHolder> {
 
     @Override public int getItemCount() {
         return busList.size();
+    }
+
+    @Override public String getCustomStringForElement(int element) {
+        return String.valueOf(busList.get(element).id);
     }
 }

@@ -1,5 +1,6 @@
 package com.mehmetakiftutuncu.eshotroid.models;
 
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 
 public class Bus implements Comparable {
@@ -11,6 +12,16 @@ public class Bus implements Comparable {
         this.id        = id;
         this.departure = departure;
         this.arrival   = arrival;
+    }
+
+    public int getColor() {
+        String i = String.format("%03d%03d%03d", id, (id * id), (id * id * id));
+
+        return Color.rgb(
+            (Integer.parseInt(i.substring(0, 2))) % 255,
+            (Integer.parseInt(i.substring(3, 5))) % 255,
+            (Integer.parseInt(i.substring(6, 8))) % 255
+        );
     }
 
     @Override public String toString() {

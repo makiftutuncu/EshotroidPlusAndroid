@@ -1,28 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:padding="4dp">
 
-        <TextView
+        <com.github.akashandroid90.imageletter.MaterialLetterIcon
             android:id="@+id/item_bus_list_id"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginEnd="8dp"
+            app:letter_color="#FFFFFF"
+            app:letter_size="24"
+            app:letters_number="3"
+            app:shape_type="circle" />
 
         <TextView
             android:id="@+id/item_bus_list_departure"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@id/item_bus_list_id"
+            android:layout_toEndOf="@id/item_bus_list_id" />
 
         <TextView
             android:id="@+id/item_bus_list_arrival"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_below="@id/item_bus_list_departure"
+            android:layout_toRightOf="@id/item_bus_list_id"
+            android:layout_toEndOf="@id/item_bus_list_id" />
+    </RelativeLayout>
 
 </android.support.v7.widget.CardView>

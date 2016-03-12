@@ -8,22 +8,31 @@ android {
         applicationId "com.mehmetakiftutuncu.eshotroid"
         minSdkVersion 15
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 7
+        versionName "+ (3.0)"
     }
+
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
 }
 
+repositories {
+    jcenter();
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.android.support:design:23.2.0'
-    compile 'com.android.support:cardview-v7:23.2.0'
-    compile 'com.android.support:recyclerview-v7:23.2.0'
+    compile 'com.android.support:appcompat-v7:23.2.1'
+    compile 'com.android.support:design:23.2.1'
+    compile 'com.android.support:cardview-v7:23.2.1'
+    compile 'com.android.support:recyclerview-v7:23.2.1'
+    compile 'com.devbrackets.android:recyclerext:0.18.1'
+    compile 'com.github.akashandroid90:imageletter:1.2'
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.turingtechnologies.materialscrollbar:lib:8.1.0'
 }
