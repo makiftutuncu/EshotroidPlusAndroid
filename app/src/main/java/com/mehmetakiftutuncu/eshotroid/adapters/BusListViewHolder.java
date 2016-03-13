@@ -9,22 +9,34 @@ import com.mehmetakiftutuncu.eshotroid.R;
 import com.mehmetakiftutuncu.eshotroid.models.Bus;
 
 public class BusListViewHolder extends RecyclerView.ViewHolder {
+    private View mLayout;
     private MaterialLetterIcon mMaterialLetterIconId;
     private TextView mTextViewDeparture;
     private TextView mTextViewArrival;
 
-    public BusListViewHolder(View busView) {
-        super(busView);
+    private BusListAdapter.OnBusSelectedListener mOnBusSelectedListener;
 
-        mMaterialLetterIconId = (MaterialLetterIcon) busView.findViewById(R.id.item_bus_list_id);
-        mTextViewDeparture    = (TextView) busView.findViewById(R.id.item_bus_list_departure);
-        mTextViewArrival      = (TextView) busView.findViewById(R.id.item_bus_list_arrival);
+    public BusListViewHolder(View layout, BusListAdapter.OnBusSelectedListener onBusSelectedListener) {
+        super(layout);
+
+        mLayout               = layout;
+        mMaterialLetterIconId = (MaterialLetterIcon) layout.findViewById(R.id.item_bus_list_id);
+        mTextViewDeparture    = (TextView) layout.findViewById(R.id.item_bus_list_departure);
+        mTextViewArrival      = (TextView) layout.findViewById(R.id.item_bus_list_arrival);
+
+        mOnBusSelectedListener = onBusSelectedListener;
     }
 
-    public void updateViews(Bus bus) {
+    public void setForBus(final Bus bus) {
         mMaterialLetterIconId.setShapeColor(bus.getColor());
         mMaterialLetterIconId.setLetter(String.valueOf(bus.id));
         mTextViewDeparture.setText(bus.departure);
         mTextViewArrival.setText(bus.arrival);
+
+        mLayout.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                mOnBusSelectedListener.onBusSelected(bus);
+            }
+        });
     }
 }

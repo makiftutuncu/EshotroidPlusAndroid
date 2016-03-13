@@ -1,9 +1,13 @@
 package com.mehmetakiftutuncu.eshotroid.models;
 
 import android.graphics.Color;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-public class Bus implements Comparable {
+import java.util.Random;
+
+public class Bus implements Comparable, Parcelable {
     public final int id;
     public final String departure;
     public final String arrival;
@@ -14,13 +18,19 @@ public class Bus implements Comparable {
         this.arrival   = arrival;
     }
 
+    public Bus(Parcel parcel) {
+        this.id        = parcel.readInt();
+        this.departure = parcel.readString();
+        this.arrival   = parcel.readString();
+    }
+
     public int getColor() {
-        String i = String.format("%03d%03d%03d", id, (id * id), (id * id * id));
+        Random random = new Random();
 
         return Color.rgb(
-            (Integer.parseInt(i.substring(0, 2))) % 255,
-            (Integer.parseInt(i.substring(3, 5))) % 255,
-            (Integer.parseInt(i.substring(6, 8))) % 255
+            random.nextInt(255) + 1,
+            random.nextInt(255) + 1,
+            random.nextInt(255) + 1
         );
     }
 
@@ -42,4 +52,24 @@ public class Bus implements Comparable {
 
         return 1;
     }
+
+    @Override public int describeContents() {
+        return 0;
+    }
+
+    @Override public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeInt(id);
+        parcel.writeString(departure);
+        parcel.writeString(arrival);
+    }
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public Bus createFromParcel(Parcel parcel) {
+            return new Bus(parcel);
+        }
+
+        public Bus[] newArray(int size) {
+            return new Bus[size];
+        }
+    };
 }

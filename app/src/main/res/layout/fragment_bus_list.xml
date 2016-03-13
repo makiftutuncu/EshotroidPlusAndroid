@@ -1,26 +1,24 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ru.vang.progressswitcher.ProgressWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:progressWidget="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/progressWidget_busList"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    progressWidget:progressViewLayout="@layout/layout_loading">
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout_busList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="8dp">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
+        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView xmlns:fastScrollerRecyclerView="http://schemas.android.com/apk/res-auto"
             android:id="@+id/recyclerView_busList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            fastScrollerRecyclerView:fastScrollAutoHide="true"
+            fastScrollerRecyclerView:fastScrollAutoHideDelay="3000"
+            fastScrollerRecyclerView:fastScrollPopupBgColor="@color/colorAccent"
+            fastScrollerRecyclerView:fastScrollPopupTextColor="@android:color/primary_text_dark"
+            fastScrollerRecyclerView:fastScrollThumbColor="@color/colorAccent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <com.turingtechnologies.materialscrollbar.DragScrollBar
-        android:id="@+id/dragScrollBar_busList"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        app:lightOnTouch="true"
-        app:recyclerView="@id/recyclerView_busList" />
-</RelativeLayout>
+</ru.vang.progressswitcher.ProgressWidget>

@@ -118,6 +118,8 @@ public class Database extends SQLiteOpenHelper {
                 database.endTransaction();
             }
 
+            database.close();
+
             return result;
         } catch (Throwable t) {
             Log.error(TAG, "Failed to save bus list to database!", t);
