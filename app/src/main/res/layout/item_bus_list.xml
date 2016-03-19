@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:padding="4dp">
 
-        <com.github.akashandroid90.imageletter.MaterialLetterIcon
+        <ImageView
             android:id="@+id/item_bus_list_id"
             android:layout_width="48dp"
             android:layout_height="48dp"
@@ -23,11 +23,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_marginRight="8dp"
-            android:layout_marginEnd="8dp"
-            app:letter_color="#FFFFFF"
-            app:letter_size="24"
-            app:letters_number="3"
-            app:shape_type="circle" />
+            android:layout_marginEnd="8dp" />
 
         <TextView
             android:id="@+id/item_bus_list_departure"
