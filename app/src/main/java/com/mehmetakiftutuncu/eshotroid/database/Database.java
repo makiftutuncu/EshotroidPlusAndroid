@@ -69,7 +69,7 @@ public class Database extends SQLiteOpenHelper {
 
             return new Some<>(busList);
         } catch (Throwable t) {
-            Log.error(TAG, "Failed to get bus list from database!", t);
+            Log.error(TAG, t, "Failed to get bus list from database!");
 
             return new None<>();
         }
@@ -111,7 +111,7 @@ public class Database extends SQLiteOpenHelper {
                 database.execSQL(insertSQLBuilder.toString(), parameters);
                 database.setTransactionSuccessful();
             } catch (Throwable t) {
-                Log.error(TAG, "Failed to save bus list to database, transaction failed!", t);
+                Log.error(TAG, t, "Failed to save bus list to database, transaction failed!");
 
                 result = false;
             } finally {
@@ -122,7 +122,7 @@ public class Database extends SQLiteOpenHelper {
 
             return result;
         } catch (Throwable t) {
-            Log.error(TAG, "Failed to save bus list to database!", t);
+            Log.error(TAG, t, "Failed to save bus list to database!");
 
             return false;
         }
@@ -133,7 +133,7 @@ public class Database extends SQLiteOpenHelper {
     }
 
     @Override public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        Log.warn(TAG, String.format("Upgrading database %s from version %d to %d!", DATABASE_NAME, oldVersion, newVersion));
+        Log.warn(TAG, "Upgrading database %s from version %d to %d!", DATABASE_NAME, oldVersion, newVersion);
 
         database.execSQL("DROP TABLE IF EXISTS " + TableBus.TABLE_NAME);
 

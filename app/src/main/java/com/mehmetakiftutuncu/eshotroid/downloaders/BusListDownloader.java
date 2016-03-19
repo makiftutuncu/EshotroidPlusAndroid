@@ -24,7 +24,7 @@ public class BusListDownloader {
         Web.instance().get(Conf.Url.BUS_LIST, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.error(TAG, "Failed to download bus list, request failed with exception!", e);
+                Log.error(TAG, e, "Failed to download bus list, request failed with exception!");
 
                 busListDownloadListener.onBusListDownloadFailed(Web.FailureType.REQUEST_FAILED_WITH_EXCEPTION);
             }
@@ -51,7 +51,7 @@ public class BusListDownloader {
             JSONArray errorsJson  = json.optJSONArray("errors");
 
             if (errorsJson != null) {
-                Log.error(TAG, "Eshotroid+ Server returned errors: " + errorsJson.toString());
+                Log.error(TAG, "Eshotroid+ Server returned errors: %s", errorsJson.toString());
 
                 busListDownloadListener.onBusListDownloadFailed(Web.FailureType.SERVER_RETURNED_ERRORS);
             }
@@ -72,8 +72,8 @@ public class BusListDownloader {
 
             busListDownloadListener.onBusListDownloaded(busList);
         } catch (Throwable t) {
-            Log.error(TAG, "Failed to parse bus list Json!", t);
-            Log.error(TAG, "Json: " + busListJsonAsString);
+            Log.error(TAG, t, "Failed to parse bus list Json!");
+            Log.error(TAG, "Json: %s", busListJsonAsString);
 
             busListDownloadListener.onBusListDownloadFailed(Web.FailureType.SERVER_RETURNED_INVALID_DATA);
         }

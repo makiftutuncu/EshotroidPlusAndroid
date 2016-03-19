@@ -33,12 +33,12 @@ public class Time {
 
                 return new Some<>(new Time(hour, minute));
             } else {
-                Log.error(TAG, "Failed to parse time \"" + timeString + "\"!");
+                Log.error(TAG, "Failed to parse time '%s'!", timeString);
 
                 return new None<>();
             }
         } catch (Throwable t) {
-            Log.error(TAG, "Failed to parse time \"" + timeString + "\"!", t);
+            Log.error(TAG, t, "Failed to parse time '%s'!", timeString);
 
             return new None<>();
         }

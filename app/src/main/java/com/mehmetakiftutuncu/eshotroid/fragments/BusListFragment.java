@@ -104,9 +104,7 @@ public class BusListFragment
 
                         final Snackbar snackbar = Snackbar.make(mSwipeRefreshLayout, "Failed to download bus list!", Snackbar.LENGTH_INDEFINITE);
                         snackbar.setAction("OK", new View.OnClickListener() {
-                            @Override public void onClick(View v) {
-                                snackbar.dismiss();
-                            }
+                            @Override public void onClick(View v) {}
                         }).show();
 
                         mSwipeRefreshLayout.setRefreshing(false);
@@ -168,7 +166,7 @@ public class BusListFragment
     }
 
     @Override public void onBusSelected(Bus bus) {
-        Log.debug(TAG, "Bus " + bus + " is selected!");
+        Log.debug(TAG, "Bus %d is selected!", bus.id);
     }
 
     @Override public void onCreate(Bundle savedInstanceState) {
