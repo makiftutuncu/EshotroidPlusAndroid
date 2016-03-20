@@ -65,7 +65,7 @@ public class BusListDownloader {
                 String departure = currentBusJson.getString("departure");
                 String arrival   = currentBusJson.getString("arrival");
 
-                Bus bus = new Bus(id, departure, arrival);
+                Bus bus = new Bus(id, departure, arrival, false);
 
                 busList.add(bus);
             }

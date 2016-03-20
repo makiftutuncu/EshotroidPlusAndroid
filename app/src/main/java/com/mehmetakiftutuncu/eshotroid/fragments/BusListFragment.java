@@ -2,14 +2,18 @@ package com.mehmetakiftutuncu.eshotroid.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 
 import com.mehmetakiftutuncu.eshotroid.R;
+import com.mehmetakiftutuncu.eshotroid.activities.HomeActivity;
 import com.mehmetakiftutuncu.eshotroid.adapters.BusListAdapter;
 import com.mehmetakiftutuncu.eshotroid.database.Database;
 import com.mehmetakiftutuncu.eshotroid.downloaders.BusListDownloader;
@@ -18,52 +22,61 @@ import com.mehmetakiftutuncu.eshotroid.models.ContentState;
 import com.mehmetakiftutuncu.eshotroid.utilities.Log;
 import com.mehmetakiftutuncu.eshotroid.utilities.Web;
 import com.mehmetakiftutuncu.eshotroid.utilities.option.Option;
-import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
+import com.pluscubed.recyclerfastscroll.RecyclerFastScroller;
 
 import java.util.ArrayList;
 
 import ru.vang.progressswitcher.ProgressWidget;
+import xyz.hanks.library.SmallBang;
 
 public class BusListFragment
         extends FragmentWithContentState
-        implements BusListDownloader.BusListDownloadListener, SwipeRefreshLayout.OnRefreshListener, BusListAdapter.OnBusSelectedListener {
+        implements BusListDownloader.BusListDownloadListener,
+                   SwipeRefreshLayout.OnRefreshListener,
+                   BusListAdapter.OnBusSelectedListener {
     public static final String TAG = "BusListFragment";
 
     private ProgressWidget mProgressWidget;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    private FastScrollRecyclerView mRecyclerView;
+    private RecyclerView mRecyclerView;
 
     private ArrayList<Bus> busList;
+    private boolean isSearching;
+
+    private LinearLayoutManager mLinearLayoutManager;
+    private BusListAdapter mBusListAdapter;
+
+    private RecyclerView.OnScrollListener mOnRecyclerViewScrollListener = new RecyclerView.OnScrollListener() {
+        int lastFirstVisibleItem = 0;
+
+        @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            final int currentFirstVisibleItem    = mLinearLayoutManager != null ? mLinearLayoutManager.findFirstVisibleItemPosition() : 0;
+            final int firstCompletelyVisibleItem = mLinearLayoutManager != null ? mLinearLayoutManager.findFirstCompletelyVisibleItemPosition() : 0;
+
+            if (!isSearching) {
+                if (currentFirstVisibleItem > this.lastFirstVisibleItem) {
+                    toggleFloatingSearchButton(false);
+                } else if (currentFirstVisibleItem < this.lastFirstVisibleItem) {
+                    toggleFloatingSearchButton(true);
+                }
+
+                if (firstCompletelyVisibleItem == 0) {
+                    mSwipeRefreshLayout.setEnabled(true);
+                } else {
+                    mSwipeRefreshLayout.setEnabled(false);
+                }
+            }
+
+            this.lastFirstVisibleItem = currentFirstVisibleItem;
+        }
+    };
 
     public BusListFragment() {}
 
     public static BusListFragment instance() {
         return new BusListFragment();
-    }
-
-    private void setBusList(ArrayList<Bus> busList) {
-        this.busList = busList;
-    }
-
-    private void loadBusList() {
-        Log.debug(TAG, "Loading bus list...");
-
-        Option<ArrayList<Bus>> maybeBusListFromDatabase = Database.with(getContext()).getBusList();
-
-        if (maybeBusListFromDatabase.isDefined) {
-            ArrayList<Bus> busListFromDatabase = maybeBusListFromDatabase.get();
-
-            if (!busListFromDatabase.isEmpty()) {
-                Log.debug(TAG, "Loaded bus list from database!");
-
-                setBusList(busListFromDatabase);
-                changeStateTo(ContentState.DATA);
-
-                return;
-            }
-        }
-
-        BusListDownloader.download(this);
     }
 
     @Override public void initializeState() {
@@ -92,7 +105,8 @@ public class BusListFragment
                         mProgressWidget.showContent(true);
 
                         mSwipeRefreshLayout.setRefreshing(false);
-                        mRecyclerView.setAdapter(new BusListAdapter(busList, BusListFragment.this));
+                        mBusListAdapter = new BusListAdapter(busList, BusListFragment.this);
+                        mRecyclerView.setAdapter(mBusListAdapter);
                         break;
 
                     case NO_DATA:
@@ -116,6 +130,7 @@ public class BusListFragment
 
     @Override public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList("busList", busList);
+        outState.putBoolean("isSearching", isSearching);
 
         super.onSaveInstanceState(outState);
     }
@@ -127,19 +142,26 @@ public class BusListFragment
 
         mProgressWidget     = (ProgressWidget) layout.findViewById(R.id.progressWidget_busList);
         mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout_busList);
-        mRecyclerView       = (FastScrollRecyclerView) layout.findViewById(R.id.recyclerView_busList);
+        mRecyclerView       = (RecyclerView) layout.findViewById(R.id.recyclerView_busList);
 
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         if (savedInstanceState != null) {
             setBusList(savedInstanceState.<Bus>getParcelableArrayList("busList"));
+            mSwipeRefreshLayout.setEnabled(!savedInstanceState.getBoolean("isSearching"));
         } else {
             setBusList(new ArrayList<Bus>());
         }
 
-        // Need to set an adapter because stupid FastScrollRecyclerView library doesn't do null check on adapter when using it to set up the scroller!
-        mRecyclerView.setAdapter(new BusListAdapter(busList, this));
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        mBusListAdapter = new BusListAdapter(busList, this);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setAdapter(mBusListAdapter);
+
+        mRecyclerView.addOnScrollListener(mOnRecyclerViewScrollListener);
+
+        RecyclerFastScroller recyclerFastScroller = (RecyclerFastScroller) layout.findViewById(R.id.recyclerFastScroller_busList);
+        recyclerFastScroller.attachRecyclerView(mRecyclerView);
 
         initializeState();
 
@@ -169,11 +191,79 @@ public class BusListFragment
         Log.debug(TAG, "Bus %d is selected!", bus.id);
     }
 
+    @Override public void onBusStarSelected(final CheckBox starView, final Bus bus) {
+        if (starView.isChecked() ^ bus.isStarred) {
+            bus.isStarred = !bus.isStarred;
+
+            if (bus.isStarred) {
+                Log.debug(TAG, "Bus %d is starred!", bus.id);
+
+                // TODO Instead of simply updating, get all data for the bus, save them to DB and call this on success.
+                Database.with(getContext()).updateBus(bus);
+            } else {
+                Log.debug(TAG, "Bus %d is un-starred!", bus.id);
+            }
+
+            SmallBang smallBang = SmallBang.attach2Window(getActivity());
+            smallBang.bang(starView);
+        }
+    }
+
     @Override public void onCreate(Bundle savedInstanceState) {
         Log.debug(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
+    }
+
+    public void search(String query) {
+        mBusListAdapter.search(query);
+
+        if (mBusListAdapter.getItemCount() <= 0) {
+            mProgressWidget.showEmpty(true);
+        } else {
+            mProgressWidget.showContent(true);
+        }
+    }
+
+    public void setSearching(boolean isSearching) {
+        this.isSearching = isSearching;
+        mSwipeRefreshLayout.setEnabled(!isSearching);
+    }
+
+    public void toggleFloatingSearchButton(boolean show) {
+        FloatingActionButton floatingSearchButton = ((HomeActivity) getActivity()).getFloatingActionButton();
+
+        if (show) {
+            floatingSearchButton.show();
+        } else {
+            floatingSearchButton.hide();
+        }
+    }
+
+    private void setBusList(ArrayList<Bus> busList) {
+        this.busList = busList;
+    }
+
+    private void loadBusList() {
+        Log.debug(TAG, "Loading bus list...");
+
+        Option<ArrayList<Bus>> maybeBusListFromDatabase = Database.with(getContext()).getBusList();
+
+        if (maybeBusListFromDatabase.isDefined) {
+            ArrayList<Bus> busListFromDatabase = maybeBusListFromDatabase.get();
+
+            if (!busListFromDatabase.isEmpty()) {
+                Log.debug(TAG, "Loaded bus list from database!");
+
+                setBusList(busListFromDatabase);
+                changeStateTo(ContentState.DATA);
+
+                return;
+            }
+        }
+
+        BusListDownloader.download(this);
     }
 }

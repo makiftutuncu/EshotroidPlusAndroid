@@ -10,15 +10,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView xmlns:fastScrollerRecyclerView="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/recyclerView_busList"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            fastScrollerRecyclerView:fastScrollAutoHide="true"
-            fastScrollerRecyclerView:fastScrollAutoHideDelay="3000"
-            fastScrollerRecyclerView:fastScrollPopupBgColor="@color/colorAccent"
-            fastScrollerRecyclerView:fastScrollPopupTextColor="@android:color/primary_text_dark"
-            fastScrollerRecyclerView:fastScrollThumbColor="@color/colorAccent" />
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_busList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <com.pluscubed.recyclerfastscroll.RecyclerFastScroller xmlns:recylerFastScroller="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/recyclerFastScroller_busList"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                recylerFastScroller:rfs_handleNormalColor="@color/colorPrimary"
+                recylerFastScroller:rfs_handlePressedColor="@color/colorAccent"
+                recylerFastScroller:rfs_hidingEnabled="false" />
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </ru.vang.progressswitcher.ProgressWidget>

@@ -1,45 +1,36 @@
 package com.mehmetakiftutuncu.eshotroid.models;
 
-import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-
-import java.util.Random;
 
 public class Bus implements Comparable, Parcelable {
     public final int id;
     public final String departure;
     public final String arrival;
+    public boolean isStarred;
 
-    public Bus(int id, String departure, String arrival) {
+    public Bus(int id, String departure, String arrival, boolean isStarred) {
         this.id        = id;
         this.departure = departure;
         this.arrival   = arrival;
+        this.isStarred = isStarred;
     }
 
     public Bus(Parcel parcel) {
         this.id        = parcel.readInt();
         this.departure = parcel.readString();
         this.arrival   = parcel.readString();
-    }
-
-    public int getColor() {
-        Random random = new Random();
-
-        return Color.rgb(
-            random.nextInt(255) + 1,
-            random.nextInt(255) + 1,
-            random.nextInt(255) + 1
-        );
+        this.isStarred = parcel.readInt() == 1;
     }
 
     @Override public String toString() {
         return String.format(
-            "{\"id\":%d,\"departure\":\"%s\",\"arrival\":\"%s\"}",
+            "{\"id\":%d,\"departure\":\"%s\",\"arrival\":\"%s\",\"isStarred\":%s}",
             id,
             departure,
-            arrival
+            arrival,
+            isStarred
         );
     }
 
@@ -61,6 +52,7 @@ public class Bus implements Comparable, Parcelable {
         parcel.writeInt(id);
         parcel.writeString(departure);
         parcel.writeString(arrival);
+        parcel.writeInt(isStarred ? 1 : 0);
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

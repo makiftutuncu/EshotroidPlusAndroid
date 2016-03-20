@@ -3,6 +3,7 @@ package com.mehmetakiftutuncu.eshotroid.adapters;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,6 +17,7 @@ public class BusListViewHolder extends RecyclerView.ViewHolder {
     private ImageView mImageViewId;
     private TextView mTextViewDeparture;
     private TextView mTextViewArrival;
+    private CheckBox mCheckBoxIsStarred;
 
     private BusListAdapter.OnBusSelectedListener mOnBusSelectedListener;
 
@@ -26,6 +28,7 @@ public class BusListViewHolder extends RecyclerView.ViewHolder {
         mImageViewId       = (ImageView) layout.findViewById(R.id.item_bus_list_id);
         mTextViewDeparture = (TextView) layout.findViewById(R.id.item_bus_list_departure);
         mTextViewArrival   = (TextView) layout.findViewById(R.id.item_bus_list_arrival);
+        mCheckBoxIsStarred = (CheckBox) layout.findViewById(R.id.item_bus_list_isStarred);
 
         mOnBusSelectedListener = onBusSelectedListener;
     }
@@ -38,11 +41,19 @@ public class BusListViewHolder extends RecyclerView.ViewHolder {
                 .textColor(Color.WHITE)
                 .bold()
                 .endConfig()
-                .buildRound(busId, ColorGenerator.MATERIAL.getColor(busId));
+                .buildRect(busId, ColorGenerator.MATERIAL.getColor(busId));
 
         mImageViewId.setImageDrawable(drawable);
         mTextViewDeparture.setText(bus.departure);
         mTextViewArrival.setText(bus.arrival);
+        mCheckBoxIsStarred.setChecked(bus.isStarred);
+
+        mCheckBoxIsStarred.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mOnBusSelectedListener.onBusStarSelected(mCheckBoxIsStarred, bus);
+            }
+        });
 
         mLayout.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {

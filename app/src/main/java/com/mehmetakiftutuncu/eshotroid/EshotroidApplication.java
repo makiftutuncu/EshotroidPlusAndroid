@@ -12,16 +12,16 @@ public class EshotroidApplication extends Application {
     @Override public void onCreate() {
         super.onCreate();
 
-        final Fabric fabric = new Fabric.Builder(getApplicationContext())
-                .kits(new Crashlytics())
-                .debuggable(true)
-                .build();
-
-        Fabric.with(fabric);
-
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
         } else {
+            final Fabric fabric = new Fabric.Builder(getApplicationContext())
+                    .kits(new Crashlytics())
+                    .debuggable(true)
+                    .build();
+
+            Fabric.with(fabric);
+
             Timber.plant(new CrashReportingTree());
         }
     }

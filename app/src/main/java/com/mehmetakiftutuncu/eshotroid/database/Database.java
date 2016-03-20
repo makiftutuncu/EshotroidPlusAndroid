@@ -22,14 +22,16 @@ public class Database extends SQLiteOpenHelper {
     public class TableBus {
         public static final String TABLE_NAME = "bus";
 
-        public static final String COLUMN_ID        = "id";
-        public static final String COLUMN_DEPARTURE = "departure";
-        public static final String COLUMN_ARRIVAL   = "arrival";
+        public static final String COLUMN_ID         = "id";
+        public static final String COLUMN_DEPARTURE  = "departure";
+        public static final String COLUMN_ARRIVAL    = "arrival";
+        public static final String COLUMN_IS_STARRED = "isStarred";
 
         public static final String CREATE_TABLE_SQL = "CREATE TABLE " + TABLE_NAME + " (" +
-            COLUMN_ID + " INTEGER PRIMARY KEY," +
-            COLUMN_DEPARTURE + " TEXT NOT NULL," +
-            COLUMN_ARRIVAL + " TEXT NOT NULL" +
+            COLUMN_ID + " INTEGER PRIMARY KEY, " +
+            COLUMN_DEPARTURE + " TEXT NOT NULL, " +
+            COLUMN_ARRIVAL + " TEXT NOT NULL, " +
+            COLUMN_IS_STARRED + " INTEGER NOT NULL" +
         ");";
     }
 
@@ -51,11 +53,12 @@ public class Database extends SQLiteOpenHelper {
 
             if (cursor != null && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
-                    int id           = cursor.getInt(cursor.getColumnIndex(TableBus.COLUMN_ID));
-                    String departure = cursor.getString(cursor.getColumnIndex(TableBus.COLUMN_DEPARTURE));
-                    String arrival   = cursor.getString(cursor.getColumnIndex(TableBus.COLUMN_ARRIVAL));
+                    int id            = cursor.getInt(cursor.getColumnIndex(TableBus.COLUMN_ID));
+                    String departure  = cursor.getString(cursor.getColumnIndex(TableBus.COLUMN_DEPARTURE));
+                    String arrival    = cursor.getString(cursor.getColumnIndex(TableBus.COLUMN_ARRIVAL));
+                    boolean isStarred = cursor.getInt(cursor.getColumnIndex(TableBus.COLUMN_IS_STARRED)) == 1;
 
-                    Bus bus = new Bus(id, departure, arrival);
+                    Bus bus = new Bus(id, departure, arrival, isStarred);
 
                     busList.add(bus);
 
@@ -86,12 +89,14 @@ public class Database extends SQLiteOpenHelper {
                 .append(TableBus.COLUMN_DEPARTURE)
                 .append(", ")
                 .append(TableBus.COLUMN_ARRIVAL)
+                .append(", ")
+                .append(TableBus.COLUMN_IS_STARRED)
                 .append(") VALUES ");
 
             for (int i = 0, size = busList.size(); i < size; i++) {
                 Bus bus = busList.get(i);
 
-                insertSQLBuilder.append("(").append(bus.id).append(", ?, ?)");
+                insertSQLBuilder.append("(").append(bus.id).append(", ?, ?, ").append(bus.isStarred ? 1 : 0).append(")");
 
                 parameters[i * 2]       = bus.departure;
                 parameters[(i * 2) + 1] = bus.arrival;
@@ -123,6 +128,49 @@ public class Database extends SQLiteOpenHelper {
             return result;
         } catch (Throwable t) {
             Log.error(TAG, t, "Failed to save bus list to database!");
+
+            return false;
+        }
+    }
+
+    public boolean updateBus(Bus bus) {
+        try {
+            String[] parameters = new String[2];
+            StringBuilder updateSQLBuilder = new StringBuilder("UPDATE ")
+                    .append(TableBus.TABLE_NAME)
+                    .append(" SET ")
+                    .append(TableBus.COLUMN_DEPARTURE)
+                    .append(" = ?, ")
+                    .append(TableBus.COLUMN_ARRIVAL)
+                    .append(" = ?, ")
+                    .append(TableBus.COLUMN_IS_STARRED)
+                    .append(" = ")
+                    .append(bus.isStarred ? 1 : 0)
+                    .append(" WHERE ")
+                    .append(TableBus.COLUMN_ID)
+                    .append(" = ")
+                    .append(bus.id);
+
+            parameters[0] = bus.departure;
+            parameters[1] = bus.arrival;
+
+            SQLiteDatabase database = getWritableDatabase();
+
+            boolean result = true;
+
+            try {
+                database.execSQL(updateSQLBuilder.toString(), parameters);
+            } catch (Throwable t) {
+                Log.error(TAG, t, "Failed to update bus '%s' on database, query failed!", bus.toString());
+
+                result = false;
+            }
+
+            database.close();
+
+            return result;
+        } catch (Throwable t) {
+            Log.error(TAG, t, "Failed to update bus '%s' on database!", bus.toString());
 
             return false;
         }
