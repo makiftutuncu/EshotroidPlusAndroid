@@ -12,9 +12,20 @@
         <include layout="@layout/layout_bus_list_toolbar" />
 
         <FrameLayout
-            android:id="@+id/frameLayout_busList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <FrameLayout
+                android:id="@+id/frameLayout_busList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/toolbar_dropShadow_elevation"
+                android:layout_gravity="top"
+                android:background="@drawable/toolbar_drop_shadow" />
+        </FrameLayout>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton

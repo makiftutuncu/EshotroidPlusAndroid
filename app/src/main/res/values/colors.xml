@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#E53935</color>
-    <color name="colorPrimaryDark">#B71C1C</color>
-    <color name="colorAccent">#F44336</color>
-    <color name="white">#FFFFFF</color>
-    <color name="semiTransparentWhite">#88FFFFFF</color>
-    <color name="transparent">#00000000</color>
+    <!-- Material red 500 -->
+    <color name="colorPrimary">#F44336</color>
+    <!-- Material red 800 -->
+    <color name="colorPrimaryDark">#C62828</color>
+    <!-- Material red 900 -->
+    <color name="colorPrimaryDarker">#B71C1C</color>
+    <!-- Material red A200 -->
+    <color name="colorAccent">#FF5252</color>
+
+    <!-- Status bar color for search -->
+    <color name="statusBarColorWhite">#AAAAAA</color>
 </resources>

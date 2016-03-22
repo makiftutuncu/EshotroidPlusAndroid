@@ -17,16 +17,18 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView_busList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:paddingBottom="4dp"/>
 
             <com.pluscubed.recyclerfastscroll.RecyclerFastScroller xmlns:recylerFastScroller="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/recyclerFastScroller_busList"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
-                recylerFastScroller:rfs_handleNormalColor="@color/colorPrimary"
-                recylerFastScroller:rfs_handlePressedColor="@color/colorAccent"
-                recylerFastScroller:rfs_hidingEnabled="false" />
+                recylerFastScroller:rfs_handleNormalColor="@color/colorPrimaryDark"
+                recylerFastScroller:rfs_handlePressedColor="@color/colorPrimaryDarker"
+                recylerFastScroller:rfs_hideDelay="5000"
+                recylerFastScroller:rfs_hidingEnabled="true" />
         </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 

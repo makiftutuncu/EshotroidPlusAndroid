@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="@drawable/toolbar_search_color_change"
-    app:titleTextColor="@color/white">
+    app:titleTextColor="@android:color/white">
 
     <RelativeLayout
         android:id="@+id/relativeLayout_search"
@@ -20,7 +20,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_margin="16dp"
-            android:background="@color/transparent"
+            android:background="@android:color/transparent"
             android:src="@mipmap/ic_clear" />
 
         <EditText
@@ -32,7 +32,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/imageButton_clearSearch"
             android:layout_toStartOf="@id/imageButton_clearSearch"
-            android:background="@color/transparent"
+            android:background="@android:color/transparent"
             android:hint="@string/general_search"
             android:imeOptions="actionSearch|flagNoExtractUi"
             android:inputType="text|textNoSuggestions"
@@ -41,15 +41,15 @@
 
     <com.github.glomadrian.materialanimatedswitch.MaterialAnimatedSwitch
         android:id="@+id/materialAnimatedSwitch_filter"
-        android:layout_gravity="center_vertical|end"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:base_release_color="@color/colorPrimaryDark"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        app:ball_press_color="@android:color/white"
+        app:ball_release_color="@android:color/white"
         app:base_press_color="@color/colorPrimaryDark"
-        app:ball_release_color="@color/white"
-        app:ball_press_color="@color/white"
-        app:icon_release="@mipmap/ic_star_border"
-        app:icon_press="@mipmap/ic_star"/>
+        app:base_release_color="@color/colorPrimaryDark"
+        app:icon_press="@mipmap/ic_star"
+        app:icon_release="@mipmap/ic_star_border" />
 </android.support.v7.widget.Toolbar>

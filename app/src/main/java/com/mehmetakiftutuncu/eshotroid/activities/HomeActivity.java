@@ -1,6 +1,7 @@
 package com.mehmetakiftutuncu.eshotroid.activities;
 
 import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
@@ -136,6 +137,9 @@ public class HomeActivity extends AppCompatActivity implements WithToolbar, Sear
                     }
                 });
                 relativeLayoutSearch.setVisibility(View.VISIBLE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(getResources().getColor(R.color.statusBarColorWhite));
+                }
                 materialAnimatedSwitch.setVisibility(View.GONE);
                 floatingActionButton.hide();
                 editTextSearch.requestFocus();
@@ -147,6 +151,9 @@ public class HomeActivity extends AppCompatActivity implements WithToolbar, Sear
                 toolbar.setNavigationIcon(null);
                 toolbar.setNavigationOnClickListener(null);
                 relativeLayoutSearch.setVisibility(View.GONE);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
+                }
                 materialAnimatedSwitch.setVisibility(View.VISIBLE);
                 floatingActionButton.show();
             }

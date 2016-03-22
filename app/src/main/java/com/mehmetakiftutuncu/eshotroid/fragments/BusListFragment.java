@@ -229,7 +229,10 @@ public class BusListFragment
 
     public void setSearching(boolean isSearching) {
         this.isSearching = isSearching;
-        mSwipeRefreshLayout.setEnabled(!isSearching);
+
+        if (isSearching) {
+            mSwipeRefreshLayout.setEnabled(false);
+        }
     }
 
     public void toggleFloatingSearchButton(boolean show) {
